@@ -1,0 +1,46 @@
+from asyncio.format_helpers import extract_stack
+# from tempfile import NamedTemporaryFile
+# from urllib.request import DataHandler
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from bs4 import BeautifulSoup
+import requests
+import time
+import pandas as pd
+from selenium import webdriver
+driver = webdriver.Chrome()
+driver.get("https://www.twitter.com/login")
+a=input("Login Information")
+driver.get("https://twitter.com/NFTICALLY/followers")
+#Scroll to end
+names_eth=set()
+bio_names=set()
+common_names=set()
+# count=0
+for x in range(1,105):
+    # print("scroll numer"+str(x))
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+    try:
+        names = driver.find_elements_by_xpath("//section[@class='css-1dbjc4n']/div/div/div")
+       # print(len(names))
+        for i in range(1,len(names)+1):
+            name = driver.find_element_by_xpath("//*[@id='react-root']/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div["+str(i)+"]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/a/div/div[1]/span/span")  
+            bio= driver.find_element_by_xpath("//*[@id='react-root']/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div["+str(i)+"]/div/div/div/div[2]/div[2]/span")
+            #user_name =name.text
+            if '.eth' in name.text:
+                names_eth.add(name.text)
+                # count= count+1
+                # print("count is"+str(count))
+            if 'NFT' or '#NFT' in bio.text:
+                bio_names.add(bio.text)  
+            if ('NFT' or '#NFT' in bio.text) and ('.eth' in name.text):
+               common_names.add(name.text) 
+            # print(name.text)         
+    except :
+        pass    
+pagesrc = driver.page_source
+soup = BeautifulSoup(pagesrc, "lxml")
+print("Total users ending with .eth :", len(names_eth))
+print("Total users with NFT or #NFT :", len(bio_names))
+print("Total users with both conditions true :", len(common_names))
