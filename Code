@@ -1,4 +1,4 @@
-from asyncio.format_helpers import extract_stack
+#from asyncio.format_helpers import extract_stack
 # from tempfile import NamedTemporaryFile
 # from urllib.request import DataHandler
 from selenium import webdriver
